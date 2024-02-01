@@ -1,0 +1,88 @@
+{% extends "shop/base.html" %}
+
+{% block title %}Checkout{% endblock title %}
+
+{% block body %}
+
+  <div class="container">
+    <div class="row mt-5">
+      <div class="col-md-12">
+          <ul id="item_list" class="list-group">
+              
+          </ul>
+      </div>
+    </div>
+
+    <div class="row mt-5">
+      <div class="col-md-12">
+        <form class="row g-3" method="POST">
+          {% csrf_token %}
+          <input type="hidden" id="items" name="items">
+          <div class="col-md-6">
+            <label for="inputEmail4" class="form-label">Name</label>
+            <input type="text" class="form-control" id="name" name="name" placeholder="John">
+          </div>
+          <div class="col-md-6">
+            <label for="inputPassword4" class="form-label">Email</label>
+            <input type="text" class="form-control" id="email" name="email" placeholder="john@example.com">
+          </div>
+          <div class="col-12">
+            <label for="inputAddress" class="form-label">Address</label>
+            <input type="text" class="form-control" id="address" name="address" placeholder="1234 Main St">
+          </div>
+          <div class="col-md-6">
+            <label for="inputCity" class="form-label">City</label>
+            <input type="text" class="form-control" id="city" name="city" placeholder="Bengaluru">
+          </div>
+          <div class="col-md-4">
+            <label for="inputState" class="form-label">State</label>
+            <input type="text" class="form-control" id="state" name="state" placeholder="Karnataka">
+          </div>
+          <div class="col-md-2">
+            <label for="inputZip" class="form-label">Zip</label>
+            <input type="text" class="form-control" id="zipcode" name="zipcode" placeholder="560086">
+          </div>
+          <div class="col-md-2">
+            <label for="inputZip" class="form-label">Amount to be paid</label>
+            <input readonly="" type="text" class="form-control" id="total" name="total">
+          </div>
+          <div class="col-12">
+            <button type="submit" class="btn btn-primary">Place Order</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+  </div>
+
+{% endblock body %}
+
+{% block checkout %}
+
+<script type="text/javascript">
+
+if(localStorage.getItem('cart')==null){
+  var cart = {};
+} else {
+  cart = JSON.parse(localStorage.getItem('cart'));
+}
+
+let total = 0;
+for (item in cart){
+  let name = cart[item][1];
+  let quantity = cart[item][0];
+  let price = cart[item][2];
+  total += price;
+
+  itemString = `<li class="list-group-item"><span class="">${quantity}</span> of ${name} <span class="badge bg-warning text-dark rounded-pill">${price}</span></li>`
+  $('#item_list').append(itemString);
+}
+
+totalPrice = `<li class="list-group-item d-flex justify-content-between align-items-center"><b>Your total</b> <span class="badge bg-warning text-dark rounded-pill">${total}</span></li>`
+$('#total').val(total)
+$('#item_list').append(totalPrice);
+$('#items').val(JSON.stringify(cart));
+
+</script>
+
+{% endblock checkout %}
